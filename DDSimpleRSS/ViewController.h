@@ -7,7 +7,19 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "PullToRefreshTableViewController.h"
+#import "MWFeedParser.h"
 
-@interface ViewController : UIViewController
+@interface ViewController : PullToRefreshTableViewController <MWFeedParserDelegate> {
+	// Parsing
+	MWFeedParser *feedParser;
+	NSMutableArray *parsedItems;
+	
+	// Displaying
+	NSArray *itemsToDisplay;
+	NSDateFormatter *formatter;    
+}
+
+@property (nonatomic, retain) NSArray *itemsToDisplay;
 
 @end

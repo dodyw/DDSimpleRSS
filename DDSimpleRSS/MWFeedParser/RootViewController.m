@@ -1,41 +1,63 @@
 //
-//  ViewController.m
-//  DDSimpleRSS
+//  RootViewController.m
+//  MWFeedParser
 //
-//  Created by Dody Wicaksono on 09/07/2012.
-//  Copyright (c) 2012 dodyrw.com. All rights reserved.
+//  Copyright (c) 2010 Michael Waterfall
+//  
+//  Permission is hereby granted, free of charge, to any person obtaining a copy
+//  of this software and associated documentation files (the "Software"), to deal
+//  in the Software without restriction, including without limitation the rights
+//  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+//  copies of the Software, and to permit persons to whom the Software is
+//  furnished to do so, subject to the following conditions:
+//  
+//  1. The above copyright notice and this permission notice shall be included
+//     in all copies or substantial portions of the Software.
+//  
+//  2. This Software cannot be used to archive or collect data such as (but not
+//     limited to) that of events, news, experiences and activities, for the 
+//     purpose of any concept relating to diary/journal keeping.
+//  
+//  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+//  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+//  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+//  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+//  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+//  THE SOFTWARE.
 //
 
-#import "ViewController.h"
+#import "RootViewController.h"
 #import "NSString+HTML.h"
 #import "MWFeedParser.h"
-#import "config.h"
+#import "DetailTableViewController.h"
 
-@interface ViewController ()
-
-@end
-
-@implementation ViewController
+@implementation RootViewController
 
 @synthesize itemsToDisplay;
 
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-	// Do any additional setup after loading the view, typically from a nib.
+#pragma mark -
+#pragma mark View lifecycle
 
-    // set tableview rect
-    self.tableView.frame = CGRectMake(0, 45, 320, 300);
-    
-    // Setup
+- (void)viewDidLoad {
+		
+	// Super
+	[super viewDidLoad];
+	
+	// Setup
+	self.title = @"Loading...";
 	formatter = [[NSDateFormatter alloc] init];
 	[formatter setDateStyle:NSDateFormatterShortStyle];
 	[formatter setTimeStyle:NSDateFormatterShortStyle];
 	parsedItems = [[NSMutableArray alloc] init];
 	self.itemsToDisplay = [NSArray array];
-    
-    // Parse
-	NSURL *feedURL = [NSURL URLWithString:RSSFEEDURL];
+	
+	// Refresh button
+	self.navigationItem.rightBarButtonItem = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh 
+																							target:self 
+																							action:@selector(refresh)] autorelease];
+	// Parse
+	NSURL *feedURL = [NSURL URLWithString:@"http://images.apple.com/main/rss/hotnews/hotnews.rss"];
 	feedParser = [[MWFeedParser alloc] initWithFeedURL:feedURL];
 	feedParser.delegate = self;
 	feedParser.feedParseType = ParseTypeFull; // Parse feed info and all items
@@ -44,66 +66,26 @@
 
 }
 
-- (void)viewDidUnload
-{
-    [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    
-}
-
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
-{
-    return (interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
-}
-
-
 #pragma mark -
 #pragma mark Parsing
 
 // Reset and reparse
-
-//- (void) refreshFinish
-//{
-//    self.tableView.userInteractionEnabled = YES;
-//    [self.tableView reloadData];    
-//    
-//    [super performSelector:@selector(dataSourceDidFinishLoadingNewData) withObject:nil afterDelay:2.0];
-//}
-
-- (void) refresh
-{
-    // do something here
-
+- (void)refresh {
+	self.title = @"Refreshing...";
 	[parsedItems removeAllObjects];
 	[feedParser stopParsing];
 	[feedParser parse];
 	self.tableView.userInteractionEnabled = NO;
+	self.tableView.alpha = 0.3;
 }
 
 - (void)updateTableWithParsedItems {
 	self.itemsToDisplay = [parsedItems sortedArrayUsingDescriptors:
-						   [NSArray arrayWithObject:[[NSSortDescriptor alloc] initWithKey:@"date" 
-																				 ascending:NO]]];
-    
-    [super performSelector:@selector(dataSourceDidFinishLoadingNewData) withObject:nil afterDelay:0.2];
-    
+						   [NSArray arrayWithObject:[[[NSSortDescriptor alloc] initWithKey:@"date" 
+																				 ascending:NO] autorelease]]];
 	self.tableView.userInteractionEnabled = YES;
 	self.tableView.alpha = 1;
 	[self.tableView reloadData];
-}
-
-- (void)reloadTableViewDataSource
-{
-	//  should be calling your tableviews model to reload
-	[super performSelector:@selector(refresh) withObject:nil afterDelay:0.2];
-	
-}
-
-- (void)dataSourceDidFinishLoadingNewData
-{
-	[refreshHeaderView setCurrentDate];  //  should check if data reload was successful 
-	
-	[super dataSourceDidFinishLoadingNewData];
 }
 
 #pragma mark -
@@ -131,14 +113,14 @@
 - (void)feedParser:(MWFeedParser *)parser didFailWithError:(NSError *)error {
 	NSLog(@"Finished Parsing With Error: %@", error);
     if (parsedItems.count == 0) {
-
+        self.title = @"Failed"; // Show failed message in title
     } else {
         // Failed but some items parsed, so show and inform of error
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Parsing Incomplete"
+        UIAlertView *alert = [[[UIAlertView alloc] initWithTitle:@"Parsing Incomplete"
                                                          message:@"There was an error during the parsing of this feed. Not all of the feed items could parsed."
                                                         delegate:nil
                                                cancelButtonTitle:@"Dismiss"
-                                               otherButtonTitles:nil];
+                                               otherButtonTitles:nil] autorelease];
         [alert show];
     }
     [self updateTableWithParsedItems];
@@ -164,18 +146,18 @@
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
+        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier] autorelease];
 		cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     }
-        
+    
 	// Configure the cell.
 	MWFeedItem *item = [itemsToDisplay objectAtIndex:indexPath.row];
 	if (item) {
-        
+		
 		// Process
 		NSString *itemTitle = item.title ? [item.title stringByConvertingHTMLToPlainText] : @"[No Title]";
 		NSString *itemSummary = item.summary ? [item.summary stringByConvertingHTMLToPlainText] : @"[No Summary]";
-        
+		
 		// Set
 		cell.textLabel.font = [UIFont boldSystemFontOfSize:15];
 		cell.textLabel.text = itemTitle;
@@ -183,7 +165,7 @@
 		if (item.date) [subtitle appendFormat:@"%@: ", [formatter stringFromDate:item.date]];
 		[subtitle appendString:itemSummary];
 		cell.detailTextLabel.text = subtitle;
-        
+		
 	}
     return cell;
 }
@@ -192,16 +174,27 @@
 #pragma mark Table view delegate
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    
+
 	// Show detail
-//	DetailTableViewController *detail = [[DetailTableViewController alloc] initWithStyle:UITableViewStyleGrouped];
-//	detail.item = (MWFeedItem *)[itemsToDisplay objectAtIndex:indexPath.row];
-//	[self.navigationController pushViewController:detail animated:YES];
-//	[detail release];
-    
+	DetailTableViewController *detail = [[DetailTableViewController alloc] initWithStyle:UITableViewStyleGrouped];
+	detail.item = (MWFeedItem *)[itemsToDisplay objectAtIndex:indexPath.row];
+	[self.navigationController pushViewController:detail animated:YES];
+	[detail release];
+	
 	// Deselect
 	[self.tableView deselectRowAtIndexPath:indexPath animated:YES];
-    
+	
+}
+
+#pragma mark -
+#pragma mark Memory management
+
+- (void)dealloc {
+	[formatter release];
+	[parsedItems release];
+	[itemsToDisplay release];
+	[feedParser release];
+    [super dealloc];
 }
 
 @end
