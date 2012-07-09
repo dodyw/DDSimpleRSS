@@ -6,26 +6,28 @@
 //  Copyright (c) 2012 dodyrw.com. All rights reserved.
 //
 
-#import "ViewController.h"
+#import "RSSMainViewController.h"
 #import "NSString+HTML.h"
 #import "MWFeedParser.h"
 #import "config.h"
 #import "HJManagedImageV.h"
+#import "RSSDetailViewController.h"
 
-@interface ViewController ()
+@interface RSSMainViewController ()
 
 @end
 
-@implementation ViewController
+@implementation RSSMainViewController
 
 @synthesize itemsToDisplay;
 @synthesize loadingView;
+
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
-
+        
     // set tableview rect
     self.tableView.frame = CGRectMake(0, 45, 320, 300);
     self.tableView.rowHeight = 90;
@@ -226,14 +228,12 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
 	// Show detail
-//	DetailTableViewController *detail = [[DetailTableViewController alloc] initWithStyle:UITableViewStyleGrouped];
-//	detail.item = (MWFeedItem *)[itemsToDisplay objectAtIndex:indexPath.row];
-//	[self.navigationController pushViewController:detail animated:YES];
-//	[detail release];
-    
+	RSSDetailViewController *detail = [RSSDetailViewController alloc];
+	detail.item = (MWFeedItem *)[itemsToDisplay objectAtIndex:indexPath.row];
+	[self.navigationController pushViewController:detail animated:YES];
+    //[self presentModalViewController:detail animated:YES];
 	// Deselect
-	[self.tableView deselectRowAtIndexPath:indexPath animated:YES];
-    
+	[self.tableView deselectRowAtIndexPath:indexPath animated:YES];    
 }
 
 @end

@@ -12,7 +12,7 @@
 #import "LoadingView.h"
 #import "HJObjManager.h"
 
-@interface ViewController : PullToRefreshTableViewController <MWFeedParserDelegate> {
+@interface RSSMainViewController : PullToRefreshTableViewController <MWFeedParserDelegate> {
 	// Parsing
 	MWFeedParser *feedParser;
 	NSMutableArray *parsedItems;
@@ -23,10 +23,11 @@
 
     LoadingView *loadingView;
     
-    HJObjManager* objMan;
+    HJObjManager *objMan;
 }
 
 @property (nonatomic, retain) NSArray *itemsToDisplay;
 @property (nonatomic, retain) LoadingView *loadingView;
+
 
 @end
