@@ -7,7 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "MWFeedItem.h"
 
 @interface RSSDetailViewController : UIViewController
 
+@property (nonatomic, retain) MWFeedItem *item;
+
 @end
+
