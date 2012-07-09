@@ -10,6 +10,7 @@
 #import "NSString+HTML.h"
 #import "MWFeedParser.h"
 #import "config.h"
+#import "HJManagedImageV.h"
 
 @interface ViewController ()
 
@@ -27,9 +28,12 @@
 
     // set tableview rect
     self.tableView.frame = CGRectMake(0, 45, 320, 300);
+    self.tableView.rowHeight = 90;
     
     // loading view
     loadingView = [LoadingView loadingViewInView:self.view];
+    
+    objMan = [[HJObjManager alloc] initWithLoadingBufferSize:10 memCacheSize:25];
     
     // Setup
 	formatter = [[NSDateFormatter alloc] init];
@@ -65,14 +69,6 @@
 #pragma mark Parsing
 
 // Reset and reparse
-
-//- (void) refreshFinish
-//{
-//    self.tableView.userInteractionEnabled = YES;
-//    [self.tableView reloadData];    
-//    
-//    [super performSelector:@selector(dataSourceDidFinishLoadingNewData) withObject:nil afterDelay:2.0];
-//}
 
 - (void) refresh
 {
@@ -170,29 +166,57 @@
     
     static NSString *CellIdentifier = @"Cell";
     
+    UILabel *titleLabel;
+    UILabel *descLabel;
+    HJManagedImageV* remoteimage;
+    
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
 		cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+        
+        // Tableview iPhone
+        titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(93, 0.0, 207, 50)];
+        titleLabel.font = [UIFont fontWithName:@"TrebuchetMS-Bold" size:13.0];
+        titleLabel.contentMode = UIViewContentModeScaleAspectFill;
+        titleLabel.lineBreakMode = UILineBreakModeWordWrap;
+        titleLabel.numberOfLines = 2;
+        titleLabel.backgroundColor = [UIColor clearColor];
+        titleLabel.tag = 1001;
+        
+        descLabel = [[UILabel alloc] initWithFrame:CGRectMake(93, 45, 207, 30)];
+        descLabel.font = [UIFont fontWithName:@"TrebuchetMS" size:11.0];
+        descLabel.contentMode = UIViewContentModeScaleAspectFill;
+        descLabel.lineBreakMode = UILineBreakModeWordWrap;
+        descLabel.numberOfLines = 2;
+        descLabel.backgroundColor = [UIColor clearColor];
+        descLabel.tag = 1002;
+        
+        remoteimage = [[HJManagedImageV alloc] initWithFrame:CGRectMake(0,0,84,84)];
+		remoteimage.tag = 1003;
+        
+        [cell addSubview:titleLabel];
+        [cell addSubview:descLabel];
+        [cell addSubview:remoteimage];
+    }
+    else {
+        titleLabel  = (UILabel *) [cell viewWithTag:1001];
+        descLabel = (UILabel *) [cell viewWithTag:1002];
+        
+        // async manage all images for the items of the tableview
+        remoteimage = (HJManagedImageV*)[cell viewWithTag:999];
+		[remoteimage clear];        
     }
         
 	// Configure the cell.
 	MWFeedItem *item = [itemsToDisplay objectAtIndex:indexPath.row];
 	if (item) {
-        
-		// Process
-		NSString *itemTitle = item.title ? [item.title stringByConvertingHTMLToPlainText] : @"[No Title]";
-		NSString *itemSummary = item.summary ? [item.summary stringByConvertingHTMLToPlainText] : @"[No Summary]";
-        
-		// Set
-		cell.textLabel.font = [UIFont boldSystemFontOfSize:15];
-		cell.textLabel.text = itemTitle;
-		NSMutableString *subtitle = [NSMutableString string];
-		if (item.date) [subtitle appendFormat:@"%@: ", [formatter stringFromDate:item.date]];
-		[subtitle appendString:itemSummary];
-		cell.detailTextLabel.text = subtitle;
-        
+        titleLabel.text = item.title;
+        descLabel.text = item.summary;  
 	}
+    
+    cell.imageView.image = [UIImage imageNamed:DEFAULTRSSIMAGE];
+    
     return cell;
 }
 

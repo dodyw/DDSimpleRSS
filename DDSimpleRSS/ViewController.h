@@ -10,6 +10,7 @@
 #import "PullToRefreshTableViewController.h"
 #import "MWFeedParser.h"
 #import "LoadingView.h"
+#import "HJObjManager.h"
 
 @interface ViewController : PullToRefreshTableViewController <MWFeedParserDelegate> {
 	// Parsing
@@ -21,6 +22,8 @@
 	NSDateFormatter *formatter;    
 
     LoadingView *loadingView;
+    
+    HJObjManager* objMan;
 }
 
 @property (nonatomic, retain) NSArray *itemsToDisplay;

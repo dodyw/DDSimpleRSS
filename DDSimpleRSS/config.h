@@ -9,7 +9,7 @@
 #ifndef DDSimpleRSS_config_h
 #define DDSimpleRSS_config_h
 
-#define RSSFEEDURL @"http://www.dodyrw.com/?feed=rss2"
+#define RSSFEEDURL @"http://www.dodyrw.com/wpappdemo/?feed=rss2"
 #define DEFAULTRSSIMAGE @"newsitem.png"
 
 #endif
