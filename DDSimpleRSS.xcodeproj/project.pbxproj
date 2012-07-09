@@ -42,6 +42,7 @@
 		25D28E1615AA73E600617B84 /* HJMOUserBase.m in Sources */ = {isa = PBXBuildFile; fileRef = 25D28E0B15AA73E600617B84 /* HJMOUserBase.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		25D28E1715AA73E600617B84 /* HJObjManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 25D28E0D15AA73E600617B84 /* HJObjManager.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		25D28E1815AA73E600617B84 /* HJWeakMutableArray.m in Sources */ = {isa = PBXBuildFile; fileRef = 25D28E0F15AA73E600617B84 /* HJWeakMutableArray.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		25E2EEB215AA906800514BF0 /* newsitem.png in Resources */ = {isa = PBXBuildFile; fileRef = 25E2EEB115AA906800514BF0 /* newsitem.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -111,6 +112,7 @@
 		25D28E0E15AA73E600617B84 /* HJWeakMutableArray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HJWeakMutableArray.h; sourceTree = "<group>"; };
 		25D28E0F15AA73E600617B84 /* HJWeakMutableArray.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HJWeakMutableArray.m; sourceTree = "<group>"; };
 		25D28E1A15AA764900617B84 /* config.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = config.h; sourceTree = "<group>"; };
+		25E2EEB115AA906800514BF0 /* newsitem.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = newsitem.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -160,6 +162,7 @@
 			isa = PBXGroup;
 			children = (
 				25D28E1A15AA764900617B84 /* config.h */,
+				25E2EEB015AA905800514BF0 /* images */,
 				25D28DC415AA72E900617B84 /* common */,
 				25D28DB615AA72DA00617B84 /* AppDelegate.h */,
 				25D28DB715AA72DA00617B84 /* AppDelegate.m */,
@@ -280,6 +283,14 @@
 			path = HJCache;
 			sourceTree = "<group>";
 		};
+		25E2EEB015AA905800514BF0 /* images */ = {
+			isa = PBXGroup;
+			children = (
+				25E2EEB115AA906800514BF0 /* newsitem.png */,
+			);
+			name = images;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -337,6 +348,7 @@
 				25D28DD215AA730A00617B84 /* blueArrow.png in Resources */,
 				25D28DD315AA730A00617B84 /* blueArrow_new.png in Resources */,
 				25D28DD415AA730A00617B84 /* whiteArrow.png in Resources */,
+				25E2EEB215AA906800514BF0 /* newsitem.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -483,6 +495,7 @@
 				25D28DC315AA72DA00617B84 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
