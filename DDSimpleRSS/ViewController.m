@@ -18,6 +18,7 @@
 @implementation ViewController
 
 @synthesize itemsToDisplay;
+@synthesize loadingView;
 
 - (void)viewDidLoad
 {
@@ -26,6 +27,9 @@
 
     // set tableview rect
     self.tableView.frame = CGRectMake(0, 45, 320, 300);
+    
+    // loading view
+    loadingView = [LoadingView loadingViewInView:self.view];
     
     // Setup
 	formatter = [[NSDateFormatter alloc] init];
@@ -125,6 +129,10 @@
 
 - (void)feedParserDidFinish:(MWFeedParser *)parser {
 	NSLog(@"Finished Parsing%@", (parser.stopped ? @" (Stopped)" : @""));
+    
+    // stop loading view
+    [loadingView removeFromSuperview];
+    
     [self updateTableWithParsedItems];
 }
 

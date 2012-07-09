@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "PullToRefreshTableViewController.h"
 #import "MWFeedParser.h"
+#import "LoadingView.h"
 
 @interface ViewController : PullToRefreshTableViewController <MWFeedParserDelegate> {
 	// Parsing
@@ -18,8 +19,11 @@
 	// Displaying
 	NSArray *itemsToDisplay;
 	NSDateFormatter *formatter;    
+
+    LoadingView *loadingView;
 }
 
 @property (nonatomic, retain) NSArray *itemsToDisplay;
+@property (nonatomic, retain) LoadingView *loadingView;
 
 @end
